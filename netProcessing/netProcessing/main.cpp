@@ -23,11 +23,60 @@ NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVE
 #include <iostream>
 #include <string>
 #include <fstream>
+#include <Windows.h>
+#include <vector>
 
 #define SUCCESS 0
 #define FAILURE 1
 
 using namespace std;
+
+int create_matrix()
+{
+	STARTUPINFO si;
+	PROCESS_INFORMATION pi;
+
+	ZeroMemory(&si, sizeof(si));
+	si.cb = sizeof(si);
+	ZeroMemory(&pi, sizeof(pi));
+	if (!CreateProcess(NULL,   // No module name (use command line)
+		"python_randn_matrix.py",        // Command line
+		NULL,           // Process handle not inheritable
+		NULL,           // Thread handle not inheritable
+		FALSE,          // Set handle inheritance to FALSE
+		0,              // No creation flags
+		NULL,           // Use parent's environment block
+		NULL,           // Use parent's starting directory 
+		&si,            // Pointer to STARTUPINFO structure
+		&pi)          // Pointer to PROCESS_INFORMATION structure
+		)
+	{
+		cout << "script didn't work";
+		return -1;
+	}
+	else
+	{
+		cout << "script worked, matrix is at location: ";
+		ifstream infile("randomized_matrix.txt");
+		DWORD dim, buffer;
+		infile >> dim;
+		vector<DWORD> mat_dimensions;
+		while (--dim)
+		{
+			infile >> buffer;
+			mat_dimensions.push_back(buffer);
+		}
+		vector<vector<DWORD>> full_matrix;
+
+		for (DWORD i = 0; i < mat_dimensions.size(); i++)
+		{
+			for (DWORD j = 0; j < mat_dimensions[i]; j++)
+			{
+
+			}
+		}
+	}
+}
 
 /* convert the kernel file into a string */
 int convertToString(const char *filename, std::string& s)
